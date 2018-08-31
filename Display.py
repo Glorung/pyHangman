@@ -1,3 +1,4 @@
+
 #
 # Curses keys
 #
@@ -11,19 +12,14 @@ class HangmanDisplay:
     def __init__(self, display_curses):
         self._display = display_curses
 
-        # Init curses
+        # Init curses colors
 
         curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLACK)
         curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
+        curses.init_pair(3, curses.COLOR_BLACK, curses.COLOR_WHITE)
+        curses.init_pair(4, curses.COLOR_BLACK, curses.COLOR_RED)
 
-        # Set display size attributes
-
-        self._center_height = 0
-        self._center_width = 0
-
-        self._height = 0
-        self._width = 0
-
+        # Init the display size attributes
         self.update()
 
     def update(self):
@@ -58,23 +54,42 @@ class HangmanDisplay:
     def refresh(self):
         self._display.refresh()
 
-    def titleBar(self):
+    def titleBar(self, more = 0):
         title = " Le jeu du pendu "
         begin_height = self._height // 4 - 1;
         begin_width = (self._center_width // 2) - (len(title) // 2) - 1;
         self._display.addstr(begin_height, begin_width, title, curses.A_REVERSE)
 
+        if (more != 0):
+            i = 0
+            for line in more:
+                begin_height = self._height // 4 + i;
+                begin_width = (self._center_width // 2) - (len(line) // 2) - 1;
+                self._display.addstr(begin_height, begin_width, line, curses.A_REVERSE)
+                i = i + 1
+
     def middleBar(self):
         i = 0
+        j = self._center_width
 
-        while (i < self._height):
-            self._display.addch(i, self._center_width, "|")
-            i = i + 1
+        while (j < self._width - 1):
+            while (i < self._height):
+                self._display.addstr(i, j, " ", curses.color_pair(3))
+                i = i + 1
+            i = 0
+            j = j + 1
 
-    def hangman(self, level):
-        level = 0
+    def hangman(self, level, imgs):
+        begin_height = int(self._height * 1 / 3) - 1
+        begin_width = int(self._width * 5 / 8)
 
-    def userTry(self, word):
+        text_to_see = (imgs["./hangman_img/" + str(level) + ".hangman"])
+        text_to_see_array = text_to_see.split('\n')
+        for line in text_to_see_array:
+            self._display.addstr(begin_height, begin_width, line, curses.color_pair(3))
+            begin_height += 1
+
+    def hidenWord(self, word):
         text_begin_width = (self._center_width // 2) - (len(word) // 2) - 1
         self._display.addstr(self._center_height - 1, text_begin_width, word)
 

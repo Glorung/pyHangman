@@ -14,14 +14,13 @@ def runHangman(display):
 
         game.update()
 
-        game.display.middleBar()
-
         game.display.refresh()
 
         game.input = game.display.getKey()
 
 def main():
-    print('Hello world')
+    print('Welcome to the Hangman game !')
+    #runHangman(0)
     curses.wrapper(runHangman)
 
 if __name__ == "__main__":
